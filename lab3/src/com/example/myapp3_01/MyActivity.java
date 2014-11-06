@@ -9,8 +9,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.widget.TextView;
-
-import java.util.Random;
+import android.widget.Toast;
 
 public class MyActivity extends Activity implements SensorEventListener{
 
@@ -21,19 +20,25 @@ public class MyActivity extends Activity implements SensorEventListener{
     private float[] magnetData;
     private float[] OrientationData;
 
-    int[] layouts = {R.id.xz1, R.id.xz2};
-    private Random rnd;
-    public int rnd() {
-        return Color.rgb(rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
-    }
-
-    public TextView xzView;
+    int layout1 = R.id.layout1;
+    int layout2 = R.id.layout2;
+    private int rnd;
+    private int col = 180;
+    private int col2 = 90;
+    //public int rnd() {
+        //return Color.rgb(rnd.nextInt(col), rnd.nextInt(col2), rnd.nextInt(col));
+    //}
+    public TextView xyView1;
+    public TextView xzView1;
+    public TextView zyView1;
+    public TextView xyView2;
+    public TextView xzView2;
+    public TextView zyView2;
 
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         msensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
 
         rotationMatrix = new float[16];
@@ -41,14 +46,45 @@ public class MyActivity extends Activity implements SensorEventListener{
         magnetData = new float[3];
         OrientationData = new float[3];
 
-        xzView = (TextView) findViewById(R.id.xzValue);
         setContentView(R.layout.main);
+        //rnd = new Random();
+        rnd = Color.rgb(-174, 2, 0);
+        findViewById(layout1).setBackgroundColor(rnd);
 
-        rnd = new Random();
-        for (int id : layouts) {
-            findViewById(id).setBackgroundColor(rnd());
-        }
+        xyView1 = (TextView) findViewById(R.id.xyValue1);
+        xzView1 = (TextView) findViewById(R.id.xzValue1);
+        zyView1 = (TextView) findViewById(R.id.zyValue1);
+
     }
+
+    public void onSensorChanged(SensorEvent event) {
+        loadNewSensorData(event);
+        SensorManager.getRotationMatrix(rotationMatrix, null, accelData, magnetData);
+        SensorManager.getOrientation(rotationMatrix, OrientationData);
+
+        xyView2 = (TextView) findViewById(R.id.xyValue2);
+        xzView2 = (TextView) findViewById(R.id.xzValue2);
+        zyView2 = (TextView) findViewById(R.id.zyValue2);
+
+        xyView2.setText(String.valueOf(Math.round(Math.toDegrees(OrientationData[0]))));
+        xzView2.setText(String.valueOf(Math.round(Math.toDegrees(OrientationData[1]))));
+        zyView2.setText(String.valueOf(Math.round(Math.toDegrees(OrientationData[2]))));
+
+        int xx = Integer.parseInt(xyView2.getText().toString());
+        int xz = Integer.parseInt(xzView2.getText().toString());
+        int xy = Integer.parseInt(zyView2.getText().toString());
+
+        int color = Color.rgb(xx, xz, xy);
+        findViewById(layout2).setBackgroundColor(color);
+        if (color == rnd) {
+            Toast toast = Toast.makeText(getApplicationContext(), "Game over", Toast.LENGTH_SHORT);
+            toast.show();
+            onPause();
+            //finish();
+        }
+
+    }
+
 
     @Override
     protected void onResume() {
@@ -65,22 +101,6 @@ public class MyActivity extends Activity implements SensorEventListener{
 
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
         // TODO Auto-generated method stub
-
-    }
-
-    public void onSensorChanged(SensorEvent event) {
-        loadNewSensorData(event);
-        SensorManager.getRotationMatrix(rotationMatrix, null, accelData, magnetData);
-        SensorManager.getOrientation (rotationMatrix, OrientationData);
-
-        if((xzView==null)){
-            xzView = (TextView) findViewById(R.id.xzValue);
-        }
-        xzView.setText(String.valueOf(Math.round(Math.toDegrees(OrientationData[1]))));
-
-        if (xzView !=null){
-
-        }
     }
 
     private void loadNewSensorData(SensorEvent event) {

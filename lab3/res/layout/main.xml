@@ -2,39 +2,72 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="fill_parent"
               android:layout_height="fill_parent"
-              android:orientation="vertical" android:weightSum="1">
+              android:orientation="vertical"
+              android:weightSum="1"
 
+              android:focusable="false">
+
+    <LinearLayout android:id="@+id/linearLayout"
+                  android:layout_width="fill_parent"
+                  android:layout_height="wrap_content">
+        <TextView android:id="@+id/xyValue1"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="1"
+                  android:textSize="25dp"
+                  android:text="0"/>
+        <TextView android:id="@+id/xzValue1"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="1"
+                  android:textSize="25dp"
+                  android:text="1"/>
+        <TextView android:id="@+id/zyValue1"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="1"
+                  android:textSize="25dp"
+                  android:text="1"/>
+    </LinearLayout>
+    <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="0.5"
+            android:id="@+id/layout1">
+    </FrameLayout>
     <LinearLayout
             android:id="@+id/linearLayout2"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content" >
-
+            android:layout_height="wrap_content">
         <TextView
-                android:id="@+id/textView3"
+                android:id="@+id/xyValue2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textSize="25dp"
-                android:text="Угол XZ" /> />
-
+                android:text="0"/>
         <TextView
-                android:id="@+id/xzValue"
+                android:id="@+id/xzValue2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textSize="25dp"
                 android:text="0" />
-
+        <TextView
+                android:id="@+id/zyValue2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="25dp"
+                android:text="0"/>
     </LinearLayout>
     <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:layout_gravity="center_horizontal"
-            android:layout_weight="0.5" android:id="@+id/xz1">
-    </FrameLayout>
-    <FrameLayout
-            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/xz2" android:layout_weight="0.5" android:layout_gravity="center_horizontal">
+            android:id="@+id/layout2"
+            android:layout_weight="0.5"
+            android:layout_gravity="center_horizontal">
     </FrameLayout>
 
 </LinearLayout>
