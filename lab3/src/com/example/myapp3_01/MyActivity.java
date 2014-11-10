@@ -11,6 +11,8 @@ import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Random;
+
 public class MyActivity extends Activity implements SensorEventListener{
 
     private SensorManager msensorManager;
@@ -22,38 +24,33 @@ public class MyActivity extends Activity implements SensorEventListener{
 
     int layout1 = R.id.layout1;
     int layout2 = R.id.layout2;
-    private int rnd;
-    private int col = 180;
-    private int col2 = 90;
-    //public int rnd() {
-        //return Color.rgb(rnd.nextInt(col), rnd.nextInt(col2), rnd.nextInt(col));
-    //}
-    public TextView xyView1;
-    public TextView xzView1;
-    public TextView zyView1;
-    public TextView xyView2;
-    public TextView xzView2;
-    public TextView zyView2;
 
-    /** Called when the activity is first created. */
+    private Random rnd;
+    public int rnd() {
+        return  Color.rgb(rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
+    }
+    TextView xyView2, xzView2,zyView2;
+    int rgb;
+    int xy2,xz2,zy2;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        msensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
+        setContentView(R.layout.main);
 
+        msensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE); // Получаем менеджер сенсоров
         rotationMatrix = new float[16];
         accelData = new float[3];
         magnetData = new float[3];
         OrientationData = new float[3];
+        rnd = new Random();
+        rgb = rnd();
 
-        setContentView(R.layout.main);
-        //rnd = new Random();
-        rnd = Color.rgb(-174, 2, 0);
-        findViewById(layout1).setBackgroundColor(rnd);
+        xyView2 = (TextView) findViewById(R.id.xyValue2);
+        xzView2 = (TextView) findViewById(R.id.xzValue2);
+        zyView2 = (TextView) findViewById(R.id.zyValue2);
 
-        xyView1 = (TextView) findViewById(R.id.xyValue1);
-        xzView1 = (TextView) findViewById(R.id.xzValue1);
-        zyView1 = (TextView) findViewById(R.id.zyValue1);
+        findViewById(layout1).setBackgroundColor(rgb);
 
     }
 
@@ -62,29 +59,28 @@ public class MyActivity extends Activity implements SensorEventListener{
         SensorManager.getRotationMatrix(rotationMatrix, null, accelData, magnetData);
         SensorManager.getOrientation(rotationMatrix, OrientationData);
 
-        xyView2 = (TextView) findViewById(R.id.xyValue2);
-        xzView2 = (TextView) findViewById(R.id.xzValue2);
-        zyView2 = (TextView) findViewById(R.id.zyValue2);
+        xy2 = (int) ((( Math.round(Math.toDegrees(OrientationData[0])))+180.0)*0.71);
+        xz2 = (int) ((( Math.round(Math.toDegrees(OrientationData[1])))+180.0)*0.71);
+        zy2 = (int) ((( Math.round(Math.toDegrees(OrientationData[2])))+180.0)*0.71);
 
-        xyView2.setText(String.valueOf(Math.round(Math.toDegrees(OrientationData[0]))));
-        xzView2.setText(String.valueOf(Math.round(Math.toDegrees(OrientationData[1]))));
-        zyView2.setText(String.valueOf(Math.round(Math.toDegrees(OrientationData[2]))));
+        ((TextView) findViewById(R.id.xyValue2)).setText(String.valueOf(xy2));
+        ((TextView) findViewById(R.id.xzValue2)).setText(String.valueOf(xz2));
+        ((TextView) findViewById(R.id.zyValue2)).setText(String.valueOf(zy2));
 
-        int xx = Integer.parseInt(xyView2.getText().toString());
-        int xz = Integer.parseInt(xzView2.getText().toString());
-        int xy = Integer.parseInt(zyView2.getText().toString());
 
-        int color = Color.rgb(xx, xz, xy);
+        int color = Color.rgb(xy2, xz2, zy2);
         findViewById(layout2).setBackgroundColor(color);
-        if (color == rnd) {
-            Toast toast = Toast.makeText(getApplicationContext(), "Game over", Toast.LENGTH_SHORT);
+        int r =(rgb>>16) & 0xFF;
+        int g =(rgb>>8) & 0xFF;
+        int b =(rgb>>0) & 0xFF;
+        if((r-20 < xy2 && r+20 < xy2 )&&(g-20 < xz2 && g+20 < xz2)&&(b-20 < zy2 && b+20 < zy2)) {
+            Toast toast = Toast.makeText(getApplicationContext(), "Win", Toast.LENGTH_SHORT);
             toast.show();
-            onPause();
-            //finish();
+            rgb = rnd();
+            findViewById(layout1).setBackgroundColor(rgb);
         }
 
     }
-
 
     @Override
     protected void onResume() {
